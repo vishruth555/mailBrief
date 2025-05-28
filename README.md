@@ -5,28 +5,11 @@ A responsive dashboard for summarizing your recent emails using Gemini 2.0 Flash
 ![Screenshot 1](assets/1.png)
 ![Screenshot 2](assets/2.png)
 
----
-
-## Features
-
-* Choose number of emails (1–10)
-* Select between **all** or **unseen** types
-* Responsive dark-themed UI
 
 ---
 
-## Requirements
 
-* Python 3.9+
-* pip
-* Access to:
-
-  * A valid email account (Gmail, Outlook, etc.)
-  * [Google Gemini API key](https://aistudio.google.com/app/apikey)
-
----
-
-## Environment Variables
+## Prerequisites
 
 Create a `.env` file in the **root directory** with the following contents:
 
