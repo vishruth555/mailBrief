@@ -60,12 +60,12 @@ def get_email_body(NumberOfEmails: int, type: str ):
                         except:
                             continue
                         if content_type == "text/plain" and "attachment" not in content_disposition:
-                            print("Body:", body)
+                            # print("Body:", body)
                             text += "\n" + body
                             break
                 else:
                     body = msg.get_payload(decode=True).decode()
-                    print("Body:", body)
+                    # print("Body:", body)
                     text += "\n" + body
         print("-" * 50)
         # Logout

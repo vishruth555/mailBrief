@@ -9,6 +9,7 @@ class Settings(BaseSettings):
     EMAIL_PASSWORD: str = ""
     IMAP_SERVER: str = "imap.gmail.com"
     GEMINI_API_KEY: str = ""
+    OLLAMA_MODEL: str = "llama3.2"
 
     class Config:
         env_file = ".env"

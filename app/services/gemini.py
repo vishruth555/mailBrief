@@ -7,7 +7,9 @@ from google import genai
 from google.genai import types
 
 
-def generate(email_body: str = None):
+
+
+def gen_gemini(email_body: str = None):
     client = genai.Client(
         api_key=settings.GEMINI_API_KEY,
     )
@@ -22,33 +24,40 @@ def generate(email_body: str = None):
         ),
     ]
     generate_content_config = types.GenerateContentConfig(
+        temperature=0.1,
         response_mime_type="application/json",
         response_schema=genai.types.Schema(
             type = genai.types.Type.OBJECT,
             properties = {
-                "summary": genai.types.Schema(
-                    type = genai.types.Type.ARRAY,
-                    items = genai.types.Schema(
-                        type = genai.types.Type.OBJECT,
-                        properties = {
-                            "subject": genai.types.Schema(
-                                type = genai.types.Type.STRING,
-                            ),
-                            "description": genai.types.Schema(
-                                type = genai.types.Type.STRING,
-                            ),
-                            "key takeaways": genai.types.Schema(
-                                type = genai.types.Type.STRING,
-                            ),
-                        },
-                    ),
+                "date": genai.types.Schema(
+                    type = genai.types.Type.STRING,
+                ),
+                "from": genai.types.Schema(
+                    type = genai.types.Type.STRING,
+                ),
+                "subject": genai.types.Schema(
+                    type = genai.types.Type.STRING,
+                ),
+                "description": genai.types.Schema(
+                    type = genai.types.Type.STRING,
+                ),
+                "key takeaways": genai.types.Schema(
+                    type = genai.types.Type.STRING,
                 ),
             },
         ),
         system_instruction=[
-            types.Part.from_text(text="""summarize the following emails in the provided JSON structure"""),
-        ],
+            types.Part.from_text(text="""Extract the email summary and respond only with a json object in this format:
+            {
+                \"date\": \"Date of the email in YYYY-MM-DD format\",
+                \"from\": \"Sender's email address\",
+                \"subject\": \"Email subject\",
+                \"description\": \"Brief description of the email content\",
+                \"key takeaways\": \"actions from the email, important information, or any other relevant details\"
+            }"""),
+                    ],
     )
+
     response = ''
 
     for chunk in client.models.generate_content_stream(
@@ -61,5 +70,3 @@ def generate(email_body: str = None):
 
     return response
 
-if __name__ == "__main__":
-    generate()

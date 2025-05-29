@@ -1,22 +1,28 @@
 import requests, json
+from app.core.config import settings
 
-MODEL = 'gemma3:latest'
+
+
+MODEL = 'llama3.2' 
 system_prompt = (
-    "You must respond ONLY with a valid JSON array of objects. "
-    "Each object must contain the fields: 'sender', 'purpose', and 'content'. "
-    "Do NOT include any extra text before or after the JSON array. Example:\n"
-    "[\n"
-    "  {\"sender\": \"Alice\", \"purpose\": \"Greeting\", \"content\": \"Hello!\"},\n"
-    "  {\"sender\": \"Bob\", \"purpose\": \"Reply\", \"content\": \"Hi there!\"}\n"
-    "]"
+    """
+Extract the email summary and respond only with a json object in this format:
+{
+    "date": "Date of the email in YYYY-MM-DD format",
+    "from": "Sender's email address",
+    "subject": "Email subject",
+    "description": "Brief description of the email content",
+    "key takeaways": "actions from the email, important information, or any other relevant details"
+}
+"""
 )
 
 
-def query_ollama(prompt):
+def gen_ollama(prompt):
     url = "http://localhost:11434/api/generate"
     payload = {
         "model": MODEL,
-        "prompt": system_prompt + prompt,
+        "prompt": prompt,
         "stream": False 
     }
 
@@ -24,16 +30,16 @@ def query_ollama(prompt):
 
     if response.status_code == 200:
         result = response.json()
-        print(result)
+        # print(result.get("response", ""))
         return result.get("response", "")
     else:
         raise Exception(f"Failed to get response: {response.status_code}, {response.text}")
 
-def query_ollama_stream(prompt):
-    url = "http://localhost:11434/api/generate"
+def gen_ollama_stream(prompt):
+    url = "http://localhost:11434/api/generate" 
     payload = {
         "model": MODEL,
-        "prompt": prompt,
+        "prompt": system_prompt + prompt,
         "stream": True
     }
 
@@ -51,10 +57,6 @@ def query_ollama_stream(prompt):
 
 
 
-# Example usage
-if __name__ == "__main__":
-    prompt = "hi there"
-    query_ollama_stream(prompt)
-    print()
-    # reply = query_ollama(prompt)
-    # print("Ollama says:\n", reply)
+
+
+
