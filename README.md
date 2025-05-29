@@ -28,9 +28,8 @@ GEMINI_API_KEY = '<your_google_gemini_api_key>'
 
 ℹ️ The email password should be an **App Password**, which you can generate in your email provider’s security settings (e.g., [Google App Passwords](https://myaccount.google.com/apppasswords)).
 
-🧠 The Gemini API key is **free** and can be generated from [Google AI Studio](https://aistudio.google.com/app/apikey).
+🧠 The Gemini API key is **free** and can be generated from [Google AI Studio](https://aistudio.google.com/app/apikey). It is **not** mandatory!
 
-Either the Gemini API key must be set in your environment variables (.env file) or Ollama must be installed and running. The recommended model is *llama 3.2:latest*.
 
 ---
 
@@ -60,10 +59,30 @@ Either the Gemini API key must be set in your environment variables (.env file) 
 5. **Access the dashboard at:**
 
    ```
-   http://127.0.0.1:8000/
+   http://127.0.0.1:5000/
    ```
 
 ---
+
+## 🚀 Running with Docker
+
+### 
+
+1. **Clone this repository:**
+
+   ```bash
+   git clone https://github.com/vishruth555/mailBrief.git
+   cd mailBrief
+   ```
+
+2. **📦 Build the run Docker Image**
+
+   ```bash
+   docker build -t mailbrief .
+   docker run --network=host -d mailbrief
+   ```
+
+
 
 ## Notes
 

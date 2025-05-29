@@ -1,11 +1,22 @@
 import requests, json
 from app.core.config import settings
+import os
 
 
 
 
 MODEL = 'llama3.2:1b' 
 # MODEL = 'gemma3:1b'
+
+
+# if os.getenv("RUNNING_IN_DOCKER") == "true":
+#     URL = "http://host.docker.internal:11434/api/generate"
+# else:
+#     URL = "http://localhost:11434/api/generate"
+
+URL = "http://localhost:11434/api/generate"
+
+
 system_prompt = (
     """
 Extract the email summary and respond only with a json object in this format:
@@ -21,7 +32,7 @@ Extract the email summary and respond only with a json object in this format:
 
 
 def gen_ollama(prompt):
-    url = "http://localhost:11434/api/generate"
+    url = URL
     payload = {
         "model": MODEL,
         "prompt": prompt,
@@ -38,7 +49,7 @@ def gen_ollama(prompt):
         raise Exception(f"Failed to get response: {response.status_code}, {response.text}")
 
 def gen_ollama_stream(prompt):
-    url = "http://localhost:11434/api/generate" 
+    url = URL
     payload = {
         "model": MODEL,
         "prompt": system_prompt + prompt,

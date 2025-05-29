@@ -1,6 +1,5 @@
 # app/api/v1/endpoints/example.py
 from fastapi import APIRouter
-import re, json, time
 
 router = APIRouter()
 

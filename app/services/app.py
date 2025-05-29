@@ -1,10 +1,9 @@
 from app.services.imap import get_email_body, estimate_tokens
-from app.services.lllm import gen_ollama_stream, gen_ollama
+from app.services.lllm import gen_ollama_stream
 from app.services.gemini import gen_gemini
 from app.core.config import settings
 import json
 import re
-import json
 
 
 
