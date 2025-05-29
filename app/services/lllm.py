@@ -3,7 +3,9 @@ from app.core.config import settings
 
 
 
-MODEL = 'llama3.2' 
+
+MODEL = 'llama3.2:1b' 
+# MODEL = 'gemma3:1b'
 system_prompt = (
     """
 Extract the email summary and respond only with a json object in this format:
