@@ -88,7 +88,7 @@ GEMINI_API_KEY = '<your_google_gemini_api_key>'
 
 - Uses **Gemini 2.0 Flash** via API for rapid summarization.
 - **Ollama** models may require more processing time for large emails and might be less optimal on systems with smaller GPUs. However, as all data processing is performed locally, this option is recommended when working with sensitive data (e.g., company mail accounts).
-
+- Change ollama model to your liking in app/services/lllm.py, it is currently using gemma3:1b
 ---
 
 ## License
