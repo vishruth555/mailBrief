@@ -23,6 +23,23 @@ def gen_gemini(email_body: str = None):
             ],
         ),
     ]
+
+    prompt_text = (
+    "\n\n"
+    "Please analyze the email content immediately preceding this instruction. "
+    "Your task is to summarize this email by extracting specific pieces of information. "
+    "Ensure your entire response is a single JSON object with the following keys and corresponding values from the email:\n"
+    "- \"date\": The date of the email, formatted as YYYY-MM-DD.\n"
+    "- \"from\": The sender's email address.\n"
+    "- \"subject\": The subject line of the email.\n"
+    "- \"description\": A brief description of the email's main content.\n"
+    "- \"key takeaways\": Important actions, decisions, or information mentioned in the email.\n"
+    "Adhere strictly to this JSON structure and the field descriptions provided in the system instructions. Do not include any text outside of this JSON object."
+    )
+
+    contents.append(prompt_text)
+
+
     generate_content_config = types.GenerateContentConfig(
         temperature=0.1,
         response_mime_type="application/json",

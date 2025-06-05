@@ -30,12 +30,36 @@ Extract the email summary and respond only with a json object in this format:
 """
 )
 
+prompt_text = (
+    "\n\n"  
+    "--- END OF EMAIL --- BEGIN INSTRUCTIONS ---\n\n"
+    "TASK: Read the email written above carefully.\n"
+    "You need to find 5 pieces of information from this email.\n\n"
+    "INFORMATION TO EXTRACT:\n"
+    "1.  **Email Date**: Find the date the email was sent. Write this date in YYYY-MM-DD format (for example: 2023-01-15).\n"
+    "2.  **Sender Email**: Find the email address of the person who sent the email.\n"
+    "3.  **Email Subject**: Find the subject line of the email.\n"
+    "4.  **Email Description**: Write a very short summary of what the email is about. One or two sentences is best.\n"
+    "5.  **Key Takeaways**: List any important things from the email, like actions to do, important news, or questions asked.\n\n"
+    "OUTPUT FORMAT INSTRUCTIONS:\n"
+    "You MUST give your answer as a JSON object. \n"
+    "Do NOT write any other words or sentences before or after the JSON object. Only the JSON.\n"
+    "Your JSON output MUST look EXACTLY like this example structure, with your extracted information replacing the placeholders:\n\n"
+    "{\n"
+    "  \"date\": \"(PUT THE EXTRACTED YYYY-MM-DD DATE HERE)\",\n"
+    "  \"from\": \"(PUT THE SENDER'S EMAIL ADDRESS HERE)\",\n"
+    "  \"subject\": \"(PUT THE EMAIL SUBJECT HERE)\",\n"
+    "  \"description\": \"(PUT YOUR SHORT EMAIL DESCRIPTION HERE)\",\n"
+    "  \"key takeaways\": \"(PUT THE KEY TAKEAWAYS HERE)\"\n"
+    "}\n\n"
+    "Make sure your final output is a valid JSON object. Fill in the information carefully."
+)
 
 def gen_ollama(prompt):
     url = URL
     payload = {
         "model": MODEL,
-        "prompt": prompt,
+        "prompt": prompt + prompt_text,
         "stream": False 
     }
 
@@ -52,7 +76,7 @@ def gen_ollama_stream(prompt):
     url = URL
     payload = {
         "model": MODEL,
-        "prompt": system_prompt + prompt,
+        "prompt": system_prompt + prompt + prompt_text,
         "stream": True
     }
 
