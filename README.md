@@ -20,13 +20,23 @@ A responsive dashboard for summarizing your recent emails using either Gemini 2.
 Create a `.env` file in the **root directory** with the following contents:
 
 ```env
-EMAIL_USERNAME = '<your_email@example.com>'
-EMAIL_PASSWORD = '<your_email_app_password>'
-IMAP_SERVER = '<imap.gmail.com>'
-GEMINI_API_KEY = '<your_google_gemini_api_key>'
+EMAIL_USERNAME = <your_email@example.com>
+EMAIL_PASSWORD = <your_email_app_password>
+IMAP_SERVER = imap.gmail.com
+GEMINI_API_KEY = <your_google_gemini_api_key>
 ```
 
 ℹ️ The email password should be an **App Password**, which you can generate in your email provider’s security settings (e.g., [Google App Passwords](https://myaccount.google.com/apppasswords)).
+
+### Popular IMAP Servers
+
+Here is a list of popular IMAP servers for common email providers:
+
+- **Gmail:** `imap.gmail.com` 
+- **Outlook.com/Hotmail:** `imap-mail.outlook.com` 
+- **Yahoo! Mail:** `imap.mail.yahoo.com` 
+- **iCloud Mail:** `imap.mail.me.com` 
+- **AOL Mail:** `imap.aol.com` 
 
 🧠 The Gemini API key is **free** and can be generated from [Google AI Studio](https://aistudio.google.com/app/apikey). It is **not** mandatory!
 
@@ -79,7 +89,7 @@ GEMINI_API_KEY = '<your_google_gemini_api_key>'
 
    ```bash
    docker build -t mailbrief .
-   docker run --network=host -d mailbrief
+   docker run -d mailbrief
    ```
 
 
@@ -87,9 +97,18 @@ GEMINI_API_KEY = '<your_google_gemini_api_key>'
 ## Notes
 
 - Uses **Gemini 2.0 Flash** via API for rapid summarization.
-- **Ollama** models may require more processing time for large emails and might be less optimal on systems with smaller GPUs. However, as all data processing is performed locally, this option is recommended when working with sensitive data (e.g., company mail accounts).
-- Change ollama model to your liking in app/services/lllm.py, it is currently using gemma3:1b
+- **Ollama** models offer a local processing alternative. Note that summarization speed depends on your hardware. For sensitive data (e.g., company mail accounts), local processing is recommended.
+- Configure your Ollama model in `app/services/lllm.py`.
+- The default model is `llama3.2:1b` (1.3GB).
+- The default context length is set to 8192, which should run on most systems.
+
 ---
+
+## Performance
+
+Here's the GPU performance with a 32k context length:
+
+![GPU Performance](assets/3.png)
 
 ## License
 

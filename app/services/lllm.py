@@ -6,31 +6,16 @@ import os
 
 
 MODEL = 'llama3.2:1b' 
-# MODEL = 'gemma3:1b'
 
 
-# if os.getenv("RUNNING_IN_DOCKER") == "true":
-#     URL = "http://host.docker.internal:11434/api/generate"
-# else:
-#     URL = "http://localhost:11434/api/generate"
+if os.getenv("RUNNING_IN_DOCKER") == "true":
+    URL = "http://host.docker.internal:11434/api/generate"
+else:
+    URL = "http://localhost:11434/api/generate"
 
-URL = "http://localhost:11434/api/generate"
 
 
 system_prompt = (
-    """
-Extract the email summary and respond only with a json object in this format:
-{
-    "date": "Date of the email in YYYY-MM-DD format",
-    "from": "Sender's email address",
-    "subject": "Email subject",
-    "description": "Brief description of the email content",
-    "key takeaways": "actions from the email, important information, or any other relevant details"
-}
-"""
-)
-
-prompt_text = (
     "\n\n"  
     "--- END OF EMAIL --- BEGIN INSTRUCTIONS ---\n\n"
     "TASK: Read the email written above carefully.\n"
@@ -52,18 +37,54 @@ prompt_text = (
     "  \"description\": \"(PUT YOUR SHORT EMAIL DESCRIPTION HERE)\",\n"
     "  \"key takeaways\": \"(PUT THE KEY TAKEAWAYS HERE)\"\n"
     "}\n\n"
-    "Make sure your final output is a valid JSON object. Fill in the information carefully."
+    "Make sure your final output is a valid JSON object. Fill in the information carefully. AND DO NOT INCLUDE LINKS.\n"
 )
 
-def gen_ollama(prompt):
-    url = URL
+def generate_payload(prompt,isStream: bool):
     payload = {
         "model": MODEL,
-        "prompt": prompt + prompt_text,
-        "stream": False 
+        "prompt": system_prompt + prompt,
+        "stream": isStream,
+        "options": {
+            # "num_ctx": 	8192,
+            "num_ctx": 	32768,
+            "temperature": 0.4,
+        },
+        "format": {
+            "type": "object",
+            "properties": {
+                "date": {
+                "type": "string"
+                },
+                "from": {
+                "type": "string"
+                },
+                "subject": {
+                "type": "string"
+                },
+                "description": {
+                "type": "string"
+                },
+                "key takeaways": {
+                "type": "string"
+                }
+            },
+            "required": [
+                "date",
+                "from",
+                "subject",
+                "description",
+                "key takeaways"
+            ]
+            }
     }
 
-    response = requests.post(url, json=payload)
+    return payload
+
+def gen_ollama(prompt):
+    payload = generate_payload(prompt, False)
+
+    response = requests.post(URL, json=payload)
 
     if response.status_code == 200:
         result = response.json()
@@ -73,14 +94,10 @@ def gen_ollama(prompt):
         raise Exception(f"Failed to get response: {response.status_code}, {response.text}")
 
 def gen_ollama_stream(prompt):
-    url = URL
-    payload = {
-        "model": MODEL,
-        "prompt": system_prompt + prompt + prompt_text,
-        "stream": True
-    }
 
-    with requests.post(url, json=payload, stream=True) as response:
+    payload = generate_payload(prompt, True)
+
+    with requests.post(URL, json=payload, stream=True) as response:
         full_reply = ""
         for line in response.iter_lines():
             if line:

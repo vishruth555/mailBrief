@@ -12,6 +12,7 @@
       font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
       background: #121212;
       color: #e0e0e0;
+      padding: 10px;
     }
 
     .container {
@@ -85,6 +86,7 @@
       font-weight: bold;
       cursor: pointer;
       transition: background 0.3s;
+      margin-bottom: 30px;
     }
 
     button:hover {
@@ -109,7 +111,10 @@
 
     .results {
       margin-top: 30px;
+      max-height: 500px;    /* or height: 400px; */
+      overflow-y: auto;
     }
+
 
     .card {
       background: #2a2a2a;
@@ -133,6 +138,17 @@
     .card p {
       margin: 10px 0;
     }
+
+    hr {
+        display: block;
+        margin: 10px auto;
+        max-width: 300px;
+        height: 4px;
+        border-radius: 8px;
+        background: linear-gradient(to bottom, #00cec9, #000000);
+        border: none;
+      }
+
   </style>
 </head>
 <body>
@@ -144,15 +160,15 @@
         <input type="number" id="number" name="number" min="1" max="100" required />
       </div>
 
-      <div class="form-group">
+      <div class="form-group" id="model-selection">
         <label>Select Model:</label>
         <div class="radio-group">
           <div>
-            <input type="radio" id="gemini" name="model" value="gemini" checked />
+            <input type="radio" id="gemini" name="model" value="gemini"  />
             <label for="gemini">Gemini</label>
           </div>
           <div>
-            <input type="radio" id="ollama" name="model" value="ollama" />
+            <input type="radio" id="ollama" name="model" value="ollama" checked />
             <label for="ollama">Ollama</label>
           </div>
         </div>
@@ -160,26 +176,26 @@
 
       <button type="submit">Summarize</button>
     </form>
-
+    <hr>
     <div class="loader" id="loader"></div>
     <div class="results" id="results"></div>
+    <hr>
   </div>
 
   <script>
     const form = document.getElementById("summary-form");
     const loader = document.getElementById("loader");
     const results = document.getElementById("results");
+    const modelSelection = document.getElementById("model-selection");
 
     form.addEventListener("submit", async (e) => {
       e.preventDefault();
       results.innerHTML = "";
+      modelSelection.style.display = "none"; 
       loader.style.display = "block";
 
       const number = parseInt(document.getElementById("number").value);
       const model = document.querySelector('input[name="model"]:checked').value;
-      // const url = model === "gemini" 
-      //   ? "http://127.0.0.1:8000/api/gemini?number_of_emails=1&type=UNSEEN" 
-      //   : "http://127.0.0.1:8000/api/ollama?number_of_emails=1&type=UNSEEN";
       const url = `http://127.0.0.1:5000/api/${model}?number_of_emails=1&type=UNSEEN`
 
       try {
@@ -190,7 +206,7 @@
             if (!response.ok) throw new Error(`Error ${response.status}`);
 
             const data = await response.json();
-            renderCard(data);
+            renderCard(i+1,data);
 
           } catch (err) {
             console.warn(`Skipping email ${i + 1}:`, err.message);
@@ -203,18 +219,21 @@
       }
     });
 
-    function renderCard(data) {
+    function renderCard(index, data) {
       const { subject, description, date, from, ["key takeaways"]: takeaways } = data;
       const card = document.createElement("div");
       card.className = "card";
       card.innerHTML = `
-        <h3>${subject}</h3>
+        <h3>${index}: ${subject}</h3>
         <p><strong>Date:</strong> ${date}</p>
         <p><strong>From:</strong> ${from}</p>
         <p><strong>Description:</strong> ${description}</p>
         <p><strong>Key Takeaways:</strong> ${takeaways}</p>
       `;
       results.appendChild(card);
+      
+      //scroll to the bottom of results
+      results.scrollTop = results.scrollHeight;
     }
   </script>
 </body>
