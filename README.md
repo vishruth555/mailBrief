@@ -38,7 +38,9 @@ Here is a list of popular IMAP servers for common email providers:
 - **iCloud Mail:** `imap.mail.me.com` 
 - **AOL Mail:** `imap.aol.com` 
 
-🧠 The Gemini API key is **free** and can be generated from [Google AI Studio](https://aistudio.google.com/app/apikey). It is **not** mandatory!
+🧠 The Gemini API key is **free** and can be generated from [Google AI Studio](https://aistudio.google.com/app/apikey). It is mandatory if you wish to use Gemini!
+
+💻 To use Ollama, download it from [ollama.com](https://ollama.com/download) and download recommended model such as `llama3.2:1b` ([ollama.com/models](https://ollama.com/library/llama3.2:1b)).
 
 
 ---
