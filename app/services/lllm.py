@@ -5,7 +5,8 @@ import os
 
 
 
-MODEL = 'llama3.2:1b' 
+MODEL = 'llama3.2:1b'
+# MODEL = 'gemma3:4b' 
 
 
 if os.getenv("RUNNING_IN_DOCKER") == "true":
@@ -46,8 +47,8 @@ def generate_payload(prompt,isStream: bool):
         "prompt": system_prompt + prompt,
         "stream": isStream,
         "options": {
-            # "num_ctx": 	8192,
-            "num_ctx": 	32768,
+            "num_ctx": 	8192,
+            # "num_ctx": 	32768,
             "temperature": 0.4,
         },
         "format": {
@@ -106,7 +107,7 @@ def gen_ollama_stream(prompt):
                     chunk = data["response"]
                     print(chunk, end="", flush=True)  # live output
                     full_reply += chunk
-        # print("\n\nFinal response:\n", full_reply)
+        print("\n\nFinal response:\n", full_reply)
         return full_reply.strip()
 
 
